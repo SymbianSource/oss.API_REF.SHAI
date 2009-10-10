@@ -1,7 +1,7 @@
 /*
-  audio_hw_control_chipset_api.h
+  audio_hwctrl_chipset_api.h
 
-  Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies). 
+  Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies). 
   All rights reserved.
 
   This program and the accompanying materials are made available 
@@ -22,7 +22,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-
 /* Each OMX header must include all required header files to allow the
  * header to compile without errors.  The includes below are required
  * for this header file to compile successfully 
@@ -31,177 +30,168 @@ extern "C" {
 #include <OMX_Audio.h>
 
 
-/* structures and enums used by OMX interface */
-
- typedef enum OMX_AUDIO_HWREGISTERTYPE { 
-     OMX_AUDIO_IO = 0,
-     OMX_AUDIO_I2C,
-     OMX_AUDIO_SLIMBUS,
-     OMX_AUDIO_CBUS = 0xFFFF     
- } OMX_AUDIO_HWREGISTERTYPE;
- 
- typedef struct OMX_AUDIO_REGBANKDESCRIPTORTYPE { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nRegBankIndex;   
-     OMX_U32 nLogicalStartAddr;
-     OMX_U32 nLogicalEndAddr;
-     OMX_AUDIO_HWREGISTERTYPE eRegBankType;
-       
- } OMX_AUDIO_REGBANKDESCRIPTORTYPE;
-
- typedef enum OMX_AUDIO_HWLOOPSTYPE { 
-     OMX_AUDIO_NOLOOP = 0,
-     OMX_AUDIO_SIDETONE_LOOP = 0xFFFF
-     /* rest of HW loops are to be defined on a vendor specific basis */
-     
- } OMX_AUDIO_HWLOOPSTYPE;
-
- typedef enum OMX_AUDIO_HWOPERATIONTYPE { 
-     OMX_AUDIO_NOOP = 0,
-     OMX_AUDIO_16BIT_SINGLE_READ,
-     OMX_AUDIO_16BIT_SINGLE_WRITE,
-     OMX_AUDIO_32BIT_SINGLE_READ,
-     OMX_AUDIO_32BIT_SINGLE_WRITE,
-     OMX_AUDIO_16BIT_MULTI_READ,
-     OMX_AUDIO_16BIT_MULTI_WRITE,
-     OMX_AUDIO_32BIT_MULTI_READ,
-     OMX_AUDIO_32BIT_MULTI_WRITE,
-     OMX_AUDIO_16BIT_BURST_MULTI_READ,
-     OMX_AUDIO_16BIT_BURST_MULTI_WRITE,
-     OMX_AUDIO_32BIT_BURST_MULTI_READ,
-     OMX_AUDIO_32BIT_BURST_MULTI_WRITE = 0xFFFF     
- } OMX_AUDIO_HWOPERATIONTYPE;
-
- 
- typedef enum OMX_AUDIO_HWCTRL_STATUSTYPE { 
-     OMX_AUDIO_OK = 0,
-     OMX_AUDIO_FAIL,
-     /* if callback facility is somehow solved in OpenMAX IL for 
-        getconfig/setconfig parameter calls, it is expected */
-     /* to have here extra status information that can be returned 
-        for e.g. multi-read/write commands */
-     OMX_AUDIO_NOT_SUPPORTED = 0xFFFF     
- } OMX_AUDIO_HWCTRL_STATUSTYPE;
-
-
-
-/* Configuration parameters */
-
+/** Audio power control.
+*/
 typedef struct OMX_AUDIO_CONFIG_POWERTYPE  { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nPortIndex;            
-     OMX_U32 nChannel;
-     OMX_BOOL bPower;
+    OMX_U32 nSize;                                    
+    OMX_VERSIONTYPE nVersion;                   
+    OMX_U32 nPortIndex;            
+    OMX_U32 nChannel;
+    OMX_BOOL bPower;
 } OMX_AUDIO_CONFIG_POWERTYPE;
 
-
+/** Audio volume ramp control.
+*/
 typedef struct OMX_AUDIO_CONFIG_VOLUMERAMPTYPE  { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nPortIndex;            
-     OMX_U32 nChannel;
-     OMX_BOOL bLinear;
-     OMX_BS32 sStartVolume;
-     OMX_BS32 sEndVolume;
-     OMX_TICKS nRampDuration;
-     OMX_BOOL bRampTerminate;
-     OMX_BS32 sCurrentVolume;
-     OMX_TICKS nRampCurrentTime;
-     OMX_TICKS nRampMinDuration;
-     OMX_TICKS nRampMaxDuration;
-     OMX_U32 nVolumeStep;
- } OMX_AUDIO_CONFIG_VOLUMERAMPTYPE;
+    OMX_U32 nSize;                                    
+    OMX_VERSIONTYPE nVersion;                   
+    OMX_U32 nPortIndex;            
+    OMX_U32 nChannel;
+    OMX_BOOL bLinear;
+    OMX_BS32 sStartVolume;
+    OMX_BS32 sEndVolume;
+    OMX_TICKS nRampDuration;
+    OMX_BOOL bRampTerminate;
+    OMX_BS32 sCurrentVolume;
+    OMX_TICKS nRampCurrentTime;
+    OMX_TICKS nRampMinDuration;
+    OMX_TICKS nRampMaxDuration;
+    OMX_U32 nVolumeStep;
+} OMX_AUDIO_CONFIG_VOLUMERAMPTYPE;
+
+/** Settings burst control.
+*/
+typedef struct OMX_AUDIO_CONFIG_BURSTCONTROLTYPE  { 
+    OMX_U32 nSize;                                    
+    OMX_VERSIONTYPE nVersion;                   
+    OMX_U32 nPortIndex;            
+    OMX_BOOL bBurstControl;
+    OMX_BOOL bStatus;
+} OMX_AUDIO_CONFIG_BURSTCONTROLTYPE;
+
+/** Audio register bank query.
+*/
+typedef struct OMX_AUDIO_CONFIG_REGISTERBANKQUERYTYPE  { 
+    OMX_U32 nSize;                                    
+    OMX_VERSIONTYPE nVersion;                   
+    OMX_U32 nPortIndex;   
+    OMX_U16 nNumRegisterBanks;           
+} OMX_AUDIO_CONFIG_REGISTERBANKQUERYTYPE;
 
 
- typedef struct OMX_AUDIO_CONFIG_BURSTCONTROLTYPE  { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nPortIndex;            
-     OMX_BOOL bBurstControl;
-     OMX_BOOL bStatus;
- } OMX_AUDIO_CONFIG_BURSTCONTROLTYPE;
-
- typedef struct OMX_AUDIO_CONFIG_REGISTERBANKQUERYTYPE  { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nPortIndex;   
-     OMX_U16 nNumRegisterBanks;           
- } OMX_AUDIO_CONFIG_REGISTERBANKQUERYTYPE;
-
-
- typedef enum OMX_AUDIO_HWREGISTERTYPE { 
-     OMX_AUDIO_IO = 0,
-     OMX_AUDIO_I2C,
-     OMX_AUDIO_SLIMBUS,
-     OMX_AUDIO_CBUS = 0xFFFF     
- } OMX_AUDIO_HWREGISTERTYPE;
+typedef enum OMX_AUDIO_HWREGISTERTYPE { 
+    OMX_AUDIO_IO = 0,
+    OMX_AUDIO_I2C,
+    OMX_AUDIO_SLIMBUS,
+    OMX_AUDIO_CBUS = 0xFFFF     
+} OMX_AUDIO_HWREGISTERTYPE;
  
- 
- typedef struct OMX_AUDIO_REGBANKDESCRIPTORTYPE { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nRegBankIndex;   
-     OMX_U32 nLogicalStartAddr;
-     OMX_U32 nLogicalEndAddr;
-     OMX_AUDIO_HWREGISTERTYPE eRegBankType;
-       
- } OMX_AUDIO_REGBANKDESCRIPTORTYPE;
+typedef struct OMX_AUDIO_REGBANKDESCRIPTORTYPE { 
+    OMX_U32 nSize;                                    
+    OMX_VERSIONTYPE nVersion;                   
+    OMX_U32 nRegBankIndex;   
+    OMX_U32 nLogicalStartAddr;
+    OMX_U32 nLogicalEndAddr;
+    OMX_AUDIO_HWREGISTERTYPE eRegBankType;
+} OMX_AUDIO_REGBANKDESCRIPTORTYPE;
 
- typedef struct OMX_AUDIO_CONFIG_REGISTERBANKTABLETYPE  { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nPortIndex;   
-     OMX_U16 nNumRegisterBanks; 
-     OMX_AUDIO_REGBANKDESCRIPTORTYPE RegBankDescriptorTable;     
- } OMX_AUDIO_CONFIG_REGISTERBANKTABLETYPE;
+/** Audio register bank table control.
+*/
+typedef struct OMX_AUDIO_CONFIG_REGISTERBANKTABLETYPE  { 
+    OMX_U32 nSize;                                    
+    OMX_VERSIONTYPE nVersion;                   
+    OMX_U32 nPortIndex;   
+    OMX_U16 nNumRegisterBanks; 
+    OMX_AUDIO_REGBANKDESCRIPTORTYPE RegBankDescriptorTable;     
+} OMX_AUDIO_CONFIG_REGISTERBANKTABLETYPE;
 
 
- typedef struct OMX_AUDIO_CONFIG_CUSTOMHWCONTROLTYPE  { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nPortIndex;   
-     OMX_AUDIO_HWCTRL_STATUSTYPE eStatus;
-     OMX_AUDIO_HWOPERATIONTYPE eHwOperation;
-     OMX_AUDIO_HWREGISTERTYPE eRegisterType;
-     OMX_U16 nDataCount;
-     OMX_U32 nLogicalAddress;
-     OMX_U16 nData;     
- } OMX_AUDIO_CONFIG_CUSTOMHWCONTROLTYPE;
+typedef enum OMX_AUDIO_HWCTRL_STATUSTYPE { 
+    OMX_AUDIO_OK = 0,
+    OMX_AUDIO_FAIL,
+    /* if callback facility is somehow solved in OpenMAX IL for getconfig/setconfig parameter calls, it is expected */
+    /* to have here extra status information that can be returned for e.g. multi-read/write commands */
+    OMX_AUDIO_NOT_SUPPORTED = 0xFFFF     
+} OMX_AUDIO_HWCTRL_STATUSTYPE;
 
+typedef enum OMX_AUDIO_HWOPERATIONTYPE { 
+    OMX_AUDIO_NOOP = 0,
+    OMX_AUDIO_16BIT_SINGLE_READ,
+    OMX_AUDIO_16BIT_SINGLE_WRITE,
+    OMX_AUDIO_32BIT_SINGLE_READ,
+    OMX_AUDIO_32BIT_SINGLE_WRITE,
+    OMX_AUDIO_16BIT_MULTI_READ,
+    OMX_AUDIO_16BIT_MULTI_WRITE,
+    OMX_AUDIO_32BIT_MULTI_READ,
+    OMX_AUDIO_32BIT_MULTI_WRITE,
+    OMX_AUDIO_16BIT_BURST_MULTI_READ,
+    OMX_AUDIO_16BIT_BURST_MULTI_WRITE,
+    OMX_AUDIO_32BIT_BURST_MULTI_READ,
+    OMX_AUDIO_32BIT_BURST_MULTI_WRITE = 0xFFFF     
+} OMX_AUDIO_HWOPERATIONTYPE;
+
+/** Custom audio HW control.
+*/
+typedef struct OMX_AUDIO_CONFIG_CUSTOMHWCONTROLTYPE  { 
+    OMX_U32 nSize;                                    
+    OMX_VERSIONTYPE nVersion;                   
+    OMX_U32 nPortIndex;   
+    OMX_AUDIO_HWCTRL_STATUSTYPE eStatus;
+    OMX_AUDIO_HWOPERATIONTYPE eHwOperation;
+    OMX_AUDIO_HWREGISTERTYPE eRegisterType;
+    OMX_U16 nDataCount;
+    OMX_U32 nLogicalAddress;
+    OMX_U16 nData;     
+} OMX_AUDIO_CONFIG_CUSTOMHWCONTROLTYPE;
+
+
+typedef enum OMX_AUDIO_HWLOOPSTYPE { 
+    OMX_AUDIO_NOLOOP = 0,
+    OMX_AUDIO_SIDETONE_LOOP = 0xFFFF
+    /* rest of HW loops are to be defined on a vendor specific basis */
+} OMX_AUDIO_HWLOOPSTYPE;
+
+/** Audio HW loop support query.
+*/
 typedef struct OMX_AUDIO_CONFIG_HWLOOPSUPPORTTYPE  { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nPortIndex;
-     OMX_U32 nSupportedLoops;    
-     OMX_AUDIO_HWLOOPSTYPE eLoopIndex;
-         
- } OMX_AUDIO_CONFIG_HWLOOPSUPPORTTYPE;
+    OMX_U32 nSize;                                    
+    OMX_VERSIONTYPE nVersion;                   
+    OMX_U32 nPortIndex;
+    OMX_U32 nSupportedLoops;    
+    OMX_AUDIO_HWLOOPSTYPE eLoopIndex;
+} OMX_AUDIO_CONFIG_HWLOOPSUPPORTTYPE;
 
+/** Audio HW loop control.
+*/
 typedef struct OMX_AUDIO_CONFIG_HWLOOPCONTROLTYPE  { 
-     OMX_U32 nSize;                                    
-     OMX_VERSIONTYPE nVersion;                   
-     OMX_U32 nPortIndex;   
-     OMX_AUDIO_HWLOOPSTYPE eLoopIndex;
-     OMX_U32 nChannel;
-     OMX_BOOL bControlSwitch;
-     OMX_BOOL bLinear;
-     OMX_BS32 sLoopVolume;
-     
- } OMX_AUDIO_CONFIG_HWLOOPCONTROLTYPE;
+    OMX_U32 nSize;                                    
+    OMX_VERSIONTYPE nVersion;                   
+    OMX_U32 nPortIndex;   
+    OMX_AUDIO_HWLOOPSTYPE eLoopIndex;
+    OMX_U32 nChannel;
+    OMX_BOOL bControlSwitch;
+    OMX_BOOL bLinear;
+    OMX_BS32 sLoopVolume;
+} OMX_AUDIO_CONFIG_HWLOOPCONTROLTYPE;
 
 
+/** Non-OpenMAX API layers */
+/***************************/
 
-/* End of OMX part */
-
-/************  non-OMX interface definition **************/  
-
-/* types and constants used by non-OMX APIs */
-
-/* channel ID denoting special case of all channels being selected 
-   where possible */       
+/* channel ID denoting special case of all channels being selected where possible */       
 #define AUDIO_COMMON_CHANNEL_ALL	0x7FFFFFFF
+
+/** 16 bit unsigned quantity that is 16 bit word aligned */
+typedef unsigned short uint16;
+
+/** 16 bit signed quantity that is 16 bit word aligned */
+typedef signed short int16;
+
+/** 32 bit unsigned quantity that is 32 bit word aligned */
+typedef unsigned long uint32;
+
+/** signed quantity that is 32 bit word aligned */
+typedef signed long int32;
 
 typedef enum AUDIO_COMMON_SWITCH { 
      AUDIO_COMMON_OFF = 0,
@@ -213,7 +203,7 @@ typedef enum AUDIO_COMMON_SWITCH {
 typedef enum AUDIO_COMMON_STATUS { 
      AUDIO_COMMON_OK = 0,
      AUDIO_COMMON_FAIL,  
-     AUDIO_COMMON_UNSUPPORTED = 0xFFFF     
+     AUDIO_COMMON_ALLCHANNELS_UNSUPPORTED = 0xFFFF     
 } AUDIO_COMMON_STATUS;
         
 typedef enum AUDIO_HAL_HW_LOOPS { 
@@ -240,24 +230,11 @@ typedef enum AUDIO_HAL_HW_OPERATION{
 } AUDIO_HAL_HW_OPERATION;
 
 typedef enum AUDIO_HAL_HW_REGISTER_TYPE { 
-     OMX_AUDIO_IO = 0,
-     OMX_AUDIO_I2C,
-     OMX_AUDIO_SLIMBUS,
-     OMX_AUDIO_CBUS = 0xFFFF     
+     AUDIO_HAL_IO = 0,
+     AUDIO_HAL_I2C,
+     AUDIO_HAL_SLIMBUS,
+     AUDIO_HAL_CBUS = 0xFFFF     
 } AUDIO_HAL_HW_REGISTER_TYPE;
-
-
-/** 16 bit unsigned quantity that is 16 bit word aligned */
-typedef unsigned short uint16;
-
-/** 16 bit signed quantity that is 16 bit word aligned */
-typedef signed short int16;
-
-/** 32 bit unsigned quantity that is 32 bit word aligned */
-typedef unsigned long uint32;
-
-/** signed quantity that is 32 bit word aligned */
-typedef signed long int32;
 
 typedef struct AUDIO_HAL_REGBANK_DESCRIPTOR{ 
      uint32 reg_bank_index;   
@@ -279,7 +256,7 @@ typedef struct AUDIO_HAL_GAIN_DESCRIPTOR  {
 
 typedef struct AUDIO_TIMED_RAMP_INFO  { 
 
-      uint32 linear,
+      uint32 linear;
       int32 ramp_start_volume;
       int32 ramp_end_volume;
       int32 current_volume;
@@ -295,21 +272,17 @@ typedef struct AUDIO_TIMED_RAMP_INFO  {
      
 } AUDIO_TIMED_RAMP_INFO;
 
-
-/* API functions */
-
-/* The convention for the functions will be:       */
-/* <supplier>_<component>_<API function name(...)>    */
+// Function prototypes
 
 /* HAL layer */
 
-void audio_hal_mute_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status), 
+void audio_hal_mute_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 channel_index, uint32 extra_status_info), 
                              uint32 channel_index, 
                              AUDIO_COMMON_SWITCH mute_control);
 
 AUDIO_COMMON_SWITCH audio_hal_mute_status (uint32 channel_index);
 
-void audio_hal_power_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status), 
+void audio_hal_power_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 channel_index, uint32 extra_status_info), 
                              uint32 channel_index, AUDIO_COMMON_SWITCH power_control);
 
 AUDIO_COMMON_SWITCH audio_hal_power_status(uint32 channel_index);
@@ -318,20 +291,23 @@ void audio_hal_gain_capabilities_query(uint32* num_channels, uint16* max_num_gai
 
 void audio_hal_gains_descriptor_query(AUDIO_HAL_GAIN_DESCRIPTOR* gain_descriptor_table);
 
-void audio_hal_loop_gain_capabilities_query(AUDIO_HAL_HW_LOOPS* num_loops, uint16* max_num_gains);
+void audio_hal_loop_gain_capabilities_query(uint16* num_loops, uint16* max_num_gains);
 
 void audio_hal_supported_loops_query (uint16* supported_loop_indexes);
 
 void audio_hal_loop_gains_descriptor_query (AUDIO_HAL_HW_LOOPS loop_index,
                                     AUDIO_HAL_GAIN_DESCRIPTOR* gain_descriptor_table);
 
-AUDIO_COMMON_STATUS audio_hal_gain_control (uint32 channel_index, uint16 gain_index,
+AUDIO_COMMON_STATUS audio_hal_gain_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 channel_index, uint32 extra_status_info), 
+                                    uint32 channel_index, uint16 gain_index,
                                     uint32 linear, int32 gain_value);
 
 AUDIO_COMMON_STATUS audio_hal_gain_query (uint32 channel_index, uint16 gain_index,
                                     uint32 linear, int32* gain_value);
 
-AUDIO_COMMON_STATUS audio_hal_loop_control(AUDIO_HAL_HW_LOOPS loop_index, AUDIO_COMMON_SWITCH loop_switch,
+AUDIO_COMMON_STATUS audio_hal_loop_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 channel_index, 
+                                                  AUDIO_HAL_HW_LOOPS loop_index, uint32 extra_status_info), 
+                                    AUDIO_HAL_HW_LOOPS loop_index, AUDIO_COMMON_SWITCH loop_switch,
                                     uint16 channel_index, uint16 gain_index, uint32 linear,
                                     int32 loop_gain_value);
 
@@ -346,26 +322,25 @@ void audio_hal_custom_hw_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS s
 
                                  
 /* Sequencer layer */
-void audio_sequencer_mute_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status), 
+void audio_sequencer_mute_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 channel_index, uint32 extra_status_info), 
                                   uint32 channel_index, AUDIO_COMMON_SWITCH mute_control);
 
-void audio_sequencer_power_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status), 
+void audio_sequencer_power_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 channel_index, uint32 extra_status_info), 
                                   uint32 channel_index, AUDIO_COMMON_SWITCH power_control);
                                   
-AUDIO_COMMON_STATUS audio_sequencer_burst_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status), 
+AUDIO_COMMON_STATUS audio_sequencer_burst_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 extra_status_info), 
                                                   AUDIO_COMMON_SWITCH burst_control);
 
-void audio_sequencer_volume_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status), 
+void audio_sequencer_volume_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 channel_index, uint32 extra_status_info), 
                                      uint32 channel_index, uint32 linear, int32 volume);
 
-void audio_sequencer_volume_query(uint32 channel_index, uint32 linear, int32* min_volume,
-                                   int32* max_volume, int32* current_volume);
+void audio_sequencer_volume_query(uint32 channel_index, uint32 linear, int32* min_volume, int32* max_volume, int32* current_volume);
 
 /* Timing critical layer */
-void audio_timed_mute_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status), 
+void audio_timed_mute_control(void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 channel_index, uint32 extra_status_info), 
                               uint32 channel_index, AUDIO_COMMON_SWITCH mute_control);
                               
-void audio_timed_volume_ramp_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status), 
+void audio_timed_volume_ramp_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 channel_index, uint32 extra_status_info), 
                              uint32 channel_index, uint32 linear, int32 start_volume,
                              int32 end_volume, uint32 ramp_duration_hi, uint32 ram_duration_lo,
                              AUDIO_COMMON_SWITCH ramp_terminate);
@@ -373,10 +348,8 @@ void audio_timed_volume_ramp_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STAT
 void audio_timed_volume_ramp_query (uint32 channel_index, AUDIO_TIMED_RAMP_INFO* volume_ramp_info);
 
 
-                                     
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif
+#endif /* OMX_Nokia_AudioExt_h */
