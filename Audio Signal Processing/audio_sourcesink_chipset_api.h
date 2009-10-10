@@ -14,7 +14,6 @@
 
   Contributors:
 */
-
 #ifndef AUDIO_SOURCESINK_CHIPSET_API_H
 #define AUDIO_SOURCESINK_CHIPSET_API_H
 
@@ -31,16 +30,10 @@ extern "C" {
 #include <OMX_Audio.h>
 
 /* Including audio_hw_control_chipset_api_v0_1.h */
-#include "audio_hw_control_chipset_api_v0_1.h"
+/*#include "audio_hw_control_chipset_api_v0_1.h"*/
 
-typedef struct OMX_AUDIO_PARAM_SIDETONEYPE {
-    OMX_U32 nSize;
-    OMX_VERSIONTYPE nVersion;
-    OMX_U32 nPortIndex;
-    OMX_S32 nAttenuation;
-    OMX_S32 nGain;
-   } OMX_AUDIO_PARAM_SIDETONETYPE;
-
+typedef OMX_AUDIO_CONFIG_VOLUMETYPE OMX_AUDIO_CONFIG_SIDETONEATTENUATIONTYPE;
+typedef OMX_AUDIO_CONFIG_VOLUMETYPE OMX_AUDIO_CONFIG_SIDETONEGAINTYPE;
 
 /* HDMI related configuration structure */
 typedef struct OMX_AUDIO_PARAM_HDMITYPE {
@@ -52,23 +45,36 @@ typedef struct OMX_AUDIO_PARAM_HDMITYPE {
     OMX_U32 nQFormat;
 } OMX_AUDIO_PARAM_HDMITYPE;
 
-typedef struct OMX_AUDIO_CONFIG_TONEGENERATORTYPE {
-		OMX_U32 nSize;
-		OMX_VERSIONTYPE nVersion;
-		OMX_U32 nPortIndex;
-		OMX_BOOL bEnabled;
-		OMX_TONEGENTONETYPE eTonetype;
-		OMX_U32 nFrequency[2];
-		OMX_U32 nDigit;
-} OMX_AUDIO_CONFIG_TONEGENERATORTYPE
 
 /* Enumerations */
 typedef enum OMX_TONEGENTONETYPE { 
-    OMX_TONEGEN_NormalTone,  /**< Normal Tone */ 
-    OMX_TONEGEN_DtmfTone,    /**< DTMF Tone */ 
+    OMX_TONEGEN_NormalTone,  /**Normal Tone */ 
+    OMX_TONEGEN_DtmfTone,    /**DTMF Tone */ 
   } OMX_TONEGENTONETYPE; 
 
-      
+    
+typedef struct OMX_AUDIO_CONFIG_TONEGENERATORTYPE {
+	OMX_U32 nSize;
+	OMX_VERSIONTYPE nVersion;
+	OMX_U32 nPortIndex;
+	OMX_BOOL bEnable;
+	OMX_TONEGENTONETYPE eTonetype;
+	OMX_U32 nFrequency[2];
+	OMX_U32 nDigit;
+} OMX_AUDIO_CONFIG_TONEGENERATORTYPE;
+
+/* Click Removal algorithm parameters */
+
+typedef struct OMX_AUDIO_CONFIG_CLICKREMOVALTYPE {
+   	OMX_U32 nSize;
+   	OMX_VERSIONTYPE nVersion;
+   	OMX_U32 nPortIndex;
+   	OMX_BOOL bEnable;
+	OMX_BU32 sClickControl;
+} OMX_AUDIO_CONFIG_CLICKREMOVALTYPE;
+
+/* End of click removal params */
+
 
 #ifdef __cplusplus
 }

@@ -14,7 +14,6 @@
 
   Contributors:
 */
-
 #ifndef AUDIO_TRANSDUCER_CHIPSET_API_H
 #define AUDIO_TRANSDUCER_CHIPSET_API_H
 
@@ -56,6 +55,7 @@ typedef struct OMX_AUDIO_CONFIG_IIR_EQUALIZER  {
      OMX_U32 nSize;
      OMX_VERSIONTYPE nVersion;  
      OMX_U32 nPortIndex;
+     OMX_U32 nChannel;
      OMX_BU32 sBandIndex ; 
      OMX_AUDIO_FILTERTYPE eFilterType;
      OMX_U32 nFilterCenterCutoffFrequency;
@@ -68,7 +68,8 @@ typedef struct OMX_AUDIO_CONFIG_FIR_RESPONSE  {
      OMX_U32 nSize;
      OMX_VERSIONTYPE nVersion;  
      OMX_U32 nPortIndex;
-     OMX_u32 nFrequencyPoints; 
+     OMX_U32 nChannel;
+     OMX_U32 nFrequencyPoints; 
      OMX_S32 nFrequencies[MAX_FIRRESPONSE_POINTS];
      OMX_S32 nGains[MAX_FIRRESPONSE_POINTS];
 } OMX_AUDIO_CONFIG_FIR_RESPONSE;
@@ -94,6 +95,7 @@ typedef struct OMX_AUDIO_CONFIG_MDRCTYPE {
     OMX_U32 nSize;
     OMX_VERSIONTYPE nVersion;
     OMX_U32 nPortIndex;
+    OMX_U32 nChannel;	
     OMX_BOOL bEnable;
     OMX_BU32 sBandIndex;
     OMX_BU32 sBandRange;
@@ -122,7 +124,7 @@ typedef enum OMX_AUDIO_SPLLIMITTYPE {
 OMX_AUDIO_SPLLimitation,	
 OMX_AUDIO_SPLNormalization,	
 OMX_AUDIO_SPLMax,
-} OMX_AUDIO_OMX_AUDIO_SPLLIMITTYPE;
+} OMX_AUDIO_SPLLIMITTYPE;
 
 
 typedef struct OMX_AUDIO_CONFIG_SPLLIMITTYPE {
@@ -136,16 +138,6 @@ typedef struct OMX_AUDIO_CONFIG_SPLLIMITTYPE {
 } OMX_AUDIO_CONFIG_SPLLIMITTYPE;
 /* End of transducer SPL limit params */
 
-/* Click Removal algorithm parameters */
-
-typedef struct OMX_AUDIO_CONFIG_CLICKREMOVALTYPE {
-   	OMX_U32 nSize;
-   	OMX_VERSIONTYPE nVersion;
-   	OMX_U32 nPortIndex;
-   	OMX_BOOL bEnable;
-		OMX_BU16 sClickControl;
-} OMX_AUDIO_CONFIG_CLICKREMOVALTYPE;
-/* End of click removal params */
 
 /* Earpiece Active Noise Control */
 

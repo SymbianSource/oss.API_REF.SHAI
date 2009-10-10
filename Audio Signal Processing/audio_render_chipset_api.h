@@ -14,7 +14,6 @@
 
   Contributors:
 */
-
 #ifndef AUDIO_RENDER_CHIPSET_API_H
 #define AUDIO_RENDER_CHIPSET_API_H
 
@@ -68,6 +67,11 @@ OMX_AUDIO_3DOutputLoudspeakers,	/*Positional 3D audio for two closely spaced lou
 OMX_AUDIO_3DOutputMax	/*Allowance for expansion in the number of positional 3D audio types */
 } OMX_AUDIO_3DOUTPUTTYPE;
 
+typedef enum OMX_AUDIO_ROLLOFFMODEL {
+OMX_AUDIO_RollOffExponential,	/*Positional 3D audio for headphones */
+OMX_AUDIO_RollOffLinear	/*Positional 3D audio for two closely spaced loudspeakers */
+} OMX_AUDIO_ROLLOFFMODEL;
+
 typedef struct OMX_AUDIO_CONFIG_3DOUTPUTTYPE {
     OMX_U32 nSize;
     OMX_VERSIONTYPE nVersion;
@@ -91,7 +95,7 @@ typedef struct OMX_AUDIO_PARAM_3DDOPPLERMODETYPE {
     OMX_BOOL bEnabled;
 } OMX_AUDIO_PARAM_3DDOPPLERMODETYPE;
 
-typedef struct OMX_AUDIO_CONFIG_3DDIRECTIVITYSETTINGSTYPE {
+typedef struct OMX_AUDIO_CONFIG_3DDOPPLERSETTINGSTYPE {
     OMX_U32 nSize;
     OMX_VERSIONTYPE nVersion;
     OMX_U32 nPortIndex;
@@ -104,8 +108,8 @@ typedef struct OMX_AUDIO_CONFIG_3DLEVELSTYPE {
     OMX_U32 nSize;
     OMX_VERSIONTYPE nVersion;
     OMX_U32 nPortIndex;
-    OMX_BS16 sDirectLevel;
-    OMX_BS16 sRoomLevel;
+    OMX_BS32 sDirectLevel;
+    OMX_BS32 sRoomLevel;
 } OMX_AUDIO_CONFIG_3DLEVELSTYPE;
 
 typedef struct OMX_AUDIO_CONFIG_3DDISTANCEATTENUATIONTYPE {
@@ -114,8 +118,8 @@ typedef struct OMX_AUDIO_CONFIG_3DDISTANCEATTENUATIONTYPE {
     OMX_U32 nPortIndex;
     OMX_BS32 sMinDistance;
     OMX_BS32 sMaxDistance;
-    OMX_BS16 sRollOffFactor;
-    OMX_BS16 sRoomRollOffFactor;
+    OMX_BS32 sRollOffFactor;
+    OMX_BS32 sRoomRollOffFactor;
     OMX_AUDIO_ROLLOFFMODEL eRollOffModel;
     OMX_BOOL bMuteAfterMax;
 } OMX_AUDIO_CONFIG_3DDISTANCEATTENUATIONTYPE;
@@ -126,7 +130,7 @@ typedef struct OMX_AUDIO_CONFIG_3DDIRECTIVITYSETTINGSTYPE {
     OMX_U32 nPortIndex;
     OMX_BS32 sInnerAngle;
     OMX_BS32 sOuterAngle;
-    OMX_BS16 sOuterLevel;
+    OMX_BS32 sOuterLevel;
 } OMX_AUDIO_CONFIG_3DDIRECTIVITYSETTINGSTYPE;
 
 typedef struct OMX_AUDIO_CONFIG_3DDIRECTIVITYORIENTATIONTYPE {
@@ -198,12 +202,6 @@ OMX_U32 nPortIndex;
 OMX_U32 nListeningAngle;
  } OMX_AUDIO_CONFIG_VIRTUALIZERLOUDSPEAKERTYPE;
 
-typedef struct OMX_AUDIO_CONFIG_VIRTUALIZERUPMIXTYPE {
-OMX_U32 nSize;
-OMX_VERSIONTYPE nVersion;
-OMX_U32 nPortIndex;
-OMX_BOOL bEnable;
-} OMX_AUDIO_CONFIG_VIRTUALIZERUPMIXTYPE;
 
 /* End of audio virtualizer related params */
 
@@ -239,31 +237,6 @@ OMX_VERSIONTYPE nVersion;
 OMX_U32 nPortIndex;
 OMX_BU32 sWaveformLength;
 } OMX_AUDIO_CONFIG_VISUALIZATIONWAVEFORMTYPE;
-
-
-typedef struct OMX_AUDIO_CONFIG_DOWNMIXERTYPE {
-OMX_U32 nSize;
-OMX_VERSIONTYPE nVersion;
-OMX_U32 nPortIndex;
-OMX_BOOL bEnable;
-} OMX_AUDIO_CONFIG_DOWNMIXERTYPE;
-
-
-typedef enum OMX_OTHER_FORMATTYPE {
-    OMX_OTHER_FormatTime = 0, /**< Transmission of various timestamps, elapsed time, 
-                                   time deltas, etc */
-    OMX_OTHER_FormatPower,    /**< Perhaps used for enabling/disabling power 
-                                   management, setting clocks? */
-    OMX_OTHER_FormatStats,    /**< Could be things such as frame rate, frames 
-                                   dropped, etc */
-    OMX_OTHER_FormatBinary,   /**< Arbitrary binary data */
-    OMX_OTHER_FormatVendorReserved = 1000, /**< Starting value for vendor specific 
-                                                formats */
-    OMX_OTHER_FormatNokiaSpectral,
-    OMX_OTHER_FormatMax = 0x7FFFFFFF
-} OMX_OTHER_FORMATTYPE;
-
-
 
 
 #ifdef __cplusplus
