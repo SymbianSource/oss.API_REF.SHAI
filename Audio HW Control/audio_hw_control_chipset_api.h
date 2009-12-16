@@ -115,19 +115,25 @@ typedef enum OMX_AUDIO_HWCTRL_STATUSTYPE {
 } OMX_AUDIO_HWCTRL_STATUSTYPE;
 
 typedef enum OMX_AUDIO_HWOPERATIONTYPE { 
-    OMX_AUDIO_NOOP = 0,
-    OMX_AUDIO_16BIT_SINGLE_READ,
-    OMX_AUDIO_16BIT_SINGLE_WRITE,
-    OMX_AUDIO_32BIT_SINGLE_READ,
-    OMX_AUDIO_32BIT_SINGLE_WRITE,
-    OMX_AUDIO_16BIT_MULTI_READ,
-    OMX_AUDIO_16BIT_MULTI_WRITE,
-    OMX_AUDIO_32BIT_MULTI_READ,
-    OMX_AUDIO_32BIT_MULTI_WRITE,
-    OMX_AUDIO_16BIT_BURST_MULTI_READ,
-    OMX_AUDIO_16BIT_BURST_MULTI_WRITE,
-    OMX_AUDIO_32BIT_BURST_MULTI_READ,
-    OMX_AUDIO_32BIT_BURST_MULTI_WRITE = 0xFFFF     
+     OMX_AUDIO_NOOP = 0,
+     OMX_AUDIO_8BIT_SINGLE_READ,
+     OMX_AUDIO_8BIT_SINGLE_WRITE,
+     OMX_AUDIO_16BIT_SINGLE_READ,
+     OMX_AUDIO_16BIT_SINGLE_WRITE,
+     OMX_AUDIO_32BIT_SINGLE_READ,
+     OMX_AUDIO_32BIT_SINGLE_WRITE,
+     OMX_AUDIO_8BIT_MULTI_READ,
+     OMX_AUDIO_8BIT_MULTI_WRITE,
+     OMX_AUDIO_16BIT_MULTI_READ,
+     OMX_AUDIO_16BIT_MULTI_WRITE,
+     OMX_AUDIO_32BIT_MULTI_READ,
+     OMX_AUDIO_32BIT_MULTI_WRITE,
+     OMX_AUDIO_8BIT_BURST_MULTI_READ,
+     OMX_AUDIO_8BIT_BURST_MULTI_WRITE,
+     OMX_AUDIO_16BIT_BURST_MULTI_READ,
+     OMX_AUDIO_16BIT_BURST_MULTI_WRITE,
+     OMX_AUDIO_32BIT_BURST_MULTI_READ,
+     OMX_AUDIO_32BIT_BURST_MULTI_WRITE = 0xFFFF     
 } OMX_AUDIO_HWOPERATIONTYPE;
 
 /** Custom audio HW control.
@@ -140,8 +146,7 @@ typedef struct OMX_AUDIO_CONFIG_CUSTOMHWCONTROLTYPE  {
     OMX_AUDIO_HWOPERATIONTYPE eHwOperation;
     OMX_AUDIO_HWREGISTERTYPE eRegisterType;
     OMX_U16 nDataCount;
-    OMX_U32 nLogicalAddress;
-    OMX_U16 nData;     
+    OMX_U8 nAddressDataSequence[];      
 } OMX_AUDIO_CONFIG_CUSTOMHWCONTROLTYPE;
 
 
@@ -181,6 +186,12 @@ typedef struct OMX_AUDIO_CONFIG_HWLOOPCONTROLTYPE  {
 /* channel ID denoting special case of all channels being selected where possible */       
 #define AUDIO_COMMON_CHANNEL_ALL	0x7FFFFFFF
 
+/** 8 bit unsigned quantity that is byte aligned */
+typedef unsigned char uint8;
+
+/** 8 bit signed quantity that is byte aligned */
+typedef signed char int8;
+
 /** 16 bit unsigned quantity that is 16 bit word aligned */
 typedef unsigned short uint16;
 
@@ -215,14 +226,20 @@ typedef enum AUDIO_HAL_HW_LOOPS {
         
 typedef enum AUDIO_HAL_HW_OPERATION{ 
      AUDIO_HAL_NOOP = 0,
+     AUDIO_HAL_8BIT_SINGLE_READ,
+     AUDIO_HAL_8BIT_SINGLE_WRITE,
      AUDIO_HAL_16BIT_SINGLE_READ,
      AUDIO_HAL_16BIT_SINGLE_WRITE,
      AUDIO_HAL_32BIT_SINGLE_READ,
      AUDIO_HAL_32BIT_SINGLE_WRITE,
+     AUDIO_HAL_8BIT_MULTI_READ,
+     AUDIO_HAL_8BIT_MULTI_WRITE,
      AUDIO_HAL_16BIT_MULTI_READ,
      AUDIO_HAL_16BIT_MULTI_WRITE,
      AUDIO_HAL_32BIT_MULTI_READ,
-     AUDIO_HAL_32BIT_MULTI_WRITE,
+     AUDIO_HAL_32BIT_MULTI_WRITE, 
+     AUDIO_HAL_8BIT_BURST_MULTI_READ,
+     AUDIO_HAL_8BIT_BURST_MULTI_WRITE,
      AUDIO_HAL_16BIT_BURST_MULTI_READ,
      AUDIO_HAL_16BIT_BURST_MULTI_WRITE,
      AUDIO_HAL_32BIT_BURST_MULTI_READ,
@@ -318,7 +335,7 @@ void audio_hal_regbank_descriptors_query(AUDIO_HAL_REGBANK_DESCRIPTOR* register_
 
 void audio_hal_custom_hw_control (void (*call_back_fn_ptr)(AUDIO_COMMON_STATUS status, uint32 extra_status_info), 
                                  AUDIO_HAL_HW_OPERATION hw_operation, AUDIO_HAL_HW_REGISTER_TYPE register_type,
-                                 uint16 num_data, uint32* address_data_sequence);
+                                 uint16 num_data, uint8* address_data_sequence);
 
                                  
 /* Sequencer layer */
