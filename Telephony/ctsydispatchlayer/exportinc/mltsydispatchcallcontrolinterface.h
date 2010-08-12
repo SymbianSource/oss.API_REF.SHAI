@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -627,7 +627,7 @@ public:
 public:
 
 	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the EMobilePhoneGetActiveAlsLine
+	 * The CTSY Dispatcher shall invoke this function on receiving the EMobilePhoneGetALSLine
 	 * request from the CTSY.
 	 *
 	 * It is a request call that is completed by invoking
@@ -796,38 +796,11 @@ public:
 	}; // class MLtsyDispatchCallControlSetAlsBlocked
 
 
-class MLtsyDispatchCallControlGetLifeTime : public MLtsyDispatchInterface
-	{
-public:
-
-	static const TInt KLtsyDispatchCallControlGetLifeTimeApiId = KDispatchCallControlFuncUnitId + 24;
-
-	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the ECustomGetLifeTimeIPC
-	 * request from the CTSY.
-	 *
-	 * It is a request call that is completed by invoking one of the 
-	 * CCtsyDispatcherCallback::CallbackCallControlGetLifeTimeComp()
-	 *
-	 * Implementation of this interface should return the lifetime of the phone. The lifetime
-     * information includes the manufacturing date of the phone and/or the total amount of air time used
-     * from the manufacturing date until the call to this method. Calling this method does not reset any data. 
-	 *
-	 * @return KErrNone on success, otherwise another error code indicating the
-	 * failure.
-	 *
-	 * @see RMmCustomAPI::GetLifeTime()
-	 */
-	virtual TInt HandleGetLifeTimeL() = 0;
-
-	}; // class MLtsyDispatchCallControlGetLifeTimeStatus
-
-
 class MLtsyDispatchCallControlTerminateErrorCall : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchCallControlTerminateErrorCallApiId = KDispatchCallControlFuncUnitId + 25;
+	static const TInt KLtsyDispatchCallControlTerminateErrorCallApiId = KDispatchCallControlFuncUnitId + 24;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the ECustomTerminateCallIPC
@@ -854,7 +827,7 @@ class MLtsyDispatchCallControlTerminateAllCalls : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchCallControlTerminateAllCallsApiId = KDispatchCallControlFuncUnitId + 26;
+	static const TInt KLtsyDispatchCallControlTerminateAllCallsApiId = KDispatchCallControlFuncUnitId + 25;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the ECustomTerminateCallIPC
@@ -875,60 +848,6 @@ public:
 	}; // class MLtsyDispatchCallControlTerminateAllCalls
 
 
-class MLtsyDispatchCallControlGetCallForwardingIndicator : public MLtsyDispatchInterface
-	{
-public:
-
-	static const TInt KLtsyDispatchCallControlGetCallForwardingIndicatorApiId = KDispatchCallControlFuncUnitId + 27;
-
-	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the ECustomGetIccCallForwardingStatusIPC
-	 * request from the CTSY.
-	 *
-	 * It is a request call that is completed by invoking one of the 
-	 * CCtsyDispatcherCallback::CallbackCallControlGetCallForwardingIndicatorComp()
-	 *
-	 * Implementation of this interface should return the call forwarding indicator from the network.
-	 *
-	 * @return KErrNone on success, otherwise another error code indicating the
-	 * failure.
-	 *
-	 * @see RMmCustomAPI::GetIccCallForwardingIndicatorStatus()
-	 */
-	virtual TInt HandleGetCallForwardingIndicatorL() = 0;
-
-	}; // class MLtsyDispatchCallControlGetCallForwardingIndicator
-
-class MLtsyDispatchCallControlUpdateLifeTimer : public MLtsyDispatchInterface
-	{
-public:
-	static const TInt KLtsyDispatchCallControlUpdateLifeTimerApiId = KDispatchCallControlFuncUnitId + 28;
-public:
-
-	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the
-	 * ECtsyUpdateLifeTimeReq request from the CTSY.
-	 *
-	 * It is a request call that is completed by invoking
-	 * CCtsyDispatcherCallback::CallbackCallControlUpdateLifeTimerComp()
-	 *
-	 * Implementation of this interface can accumulate the number of seconds that
-	 * have elapsed since a call started. By initialising a variable in the LTSY when a 
-	 * call is dialed, then adding the value contained in aDuration to this variable 
-	 * it is possible to track the duration of a call.
-	 * 
-	 * HandleUpdateLifeTimerReqL is usually invoked every 10 seconds.
-	 *
-	 * @param aDuration The number of seconds that have elapsed since the last time
-	 * this interface was invoked (or since the start of the call if the first invocation).
-	 *
-	 * @return KErrNone if the LTSY was successful; KErrNotSupported if the LTSY does not
-	 * support handling of this request or another error code indicating the
-	 * failure otherwise.
-	 */
-	virtual TInt HandleUpdateLifeTimerReqL(TUint32 aDuration) = 0;
-
-	}; // class MLtsyDispatchCallControlUpdateLifeTimer
 
 	
 // Note: A static constant has been defined in MLtsyDispatchCallControlSwap (abbove) with the highest Id 

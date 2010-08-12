@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -74,6 +74,7 @@ namespace DispatcherCellBroadcast
 
 	}
 
+
 class MLtsyDispatchCellBroadcastSetBroadcastFilterSetting : public MLtsyDispatchInterface
 	{
 public:
@@ -120,7 +121,6 @@ public:
 	 * RMobileBroadcastMessaging::ReceiveMessage will be completed when a new incoming broadcast message has been received
 	 * via CallbackCellBroadcastGsmBroadcastNotifyMessageReceivedInd() or CallbackCellBroadcastWcdmaBroadcastMessageReceivedInd()
 	 * 
-     * @param aFilterSetting struct settings for a filter to accept/reject messages
 	 *
 	 * @return KErrNone on success, otherwise another error code indicating the
 	 * failure.
@@ -129,7 +129,7 @@ public:
 	 * @see CCtsyDispatcherCallback::CallbackCellBroadcastGsmBroadcastNotifyMessageReceivedInd()
 	 * @see CCtsyDispatcherCallback::CallbackCellBroadcastWcdmaBroadcastMessageReceivedInd()
 	 */
-	virtual TInt HandleActivateBroadcastReceiveMessageReqL(RMobileBroadcastMessaging::TMobilePhoneBroadcastFilter aFilterSetting) = 0;
+	virtual TInt HandleActivateBroadcastReceiveMessageReqL() = 0;
 
 	}; // class MLtsyDispatchCellBroadcastActivateBroadcastReceiveMessage
 
@@ -149,59 +149,14 @@ public:
 	 * CCtsyDispatcherCallback::CallbackCellBroadcastReceiveMessageCancelComp()
 	 *
 	 *
-     * @param aFilterSetting struct settings for a filter to accept/reject messages
-	 *
 	 * @return KErrNone on success, otherwise another error code indicating the
 	 * failure.
 	 * 
 	 * @see RMobileBroadcastMessaging::ReceiveMessage()
 	 * @see RMobileBroadcastMessaging::Close()
 	 */
-	virtual TInt HandleReceiveMessageCancelReqL(RMobileBroadcastMessaging::TMobilePhoneBroadcastFilter aFilterSetting ) = 0;
+	virtual TInt HandleReceiveMessageCancelReqL() = 0;
 
 	}; // class MLtsyDispatchCellBroadcastReceiveMessageCancel
-	
-class MLtsyDispatchCellBroadcastStartSimCbTopicBrowsing : public MLtsyDispatchInterface
-	{
-public:
-
-	static const TInt KLtsyDispatchCellBroadcastStartSimCbTopicBrowsingApiId = KDispatchCellBroadcastFuncUnitId + 4;
-
-	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the ECustomStartSimCbTopicBrowsingIPC
-	 * request from the CTSY.
-	 *
-	 * It is a request call that is completed by invoking
-	 * CCtsyDispatcherCallback::CallbackCellBroadcastStartSimCbTopicBrowsingComp()
-	 *     
-	 *
-	 * @return KErrNone on success, otherwise another error code indicating the
-	 * failure.
-	 */
-	virtual TInt HandleStartSimCbTopicBrowsingReqL() = 0;
-
-	}; // class MLtsyDispatchCellBroadcastStartSimCbTopicBrowsing	
-
-class MLtsyDispatchCellBroadcastDeleteSimCbTopic : public MLtsyDispatchInterface
-	{
-public:
-
-	static const TInt KLtsyDispatchCellBroadcastDeleteSimCbTopicApiId = KDispatchCellBroadcastFuncUnitId + 5;
-
-	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the ECustomDeleteSimCbTopicIPC
-	 * request from the CTSY.
-	 *
-	 * It is a request call that is completed by invoking
-	 * CCtsyDispatcherCallback::CallbackCellBroadcastDeleteSimCbTopicComp()
-	 *     
-	 *
-	 * @return KErrNone on success, otherwise another error code indicating the
-	 * failure.
-	 */
-	virtual TInt HandleDeleteSimCbTopicReqL(TUint aIndex, TBool aDeleteFlag) = 0;
-
-	}; // class MLtsyDispatchCellBroadcastDeleteSimCbTopic	
-
 
 #endif /*MLTSYDISPATCHCELLBROADCASTINTERFACE_H_*/

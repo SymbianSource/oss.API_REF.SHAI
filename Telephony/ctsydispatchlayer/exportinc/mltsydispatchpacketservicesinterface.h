@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -147,7 +147,7 @@ public:
 	 * Implementation of this interface should pass LTSY the parameters it needs to set the 
 	 * context configuration 
 	 *
-	 * @param aContextId the context name
+	 * @param aContextName the context name
 	 * @param aAccessPointName the access name which identifies the GGSN to be used
  	 * @param aPdpType the protocol type
  	 * @param aPdpAddress the PDP address for this context
@@ -156,7 +156,7 @@ public:
 	 * @return KErrNone on success, otherwise another error code indicating the
 	 * failure.
 	 */
-	virtual TInt HandleSetPdpContextConfigReqL(const TDesC& aContextId,
+	virtual TInt HandleSetPdpContextConfigReqL(const TDesC& aContextName,
 			const TDesC8& aAccessPointName,
 			const RPacketContext::TProtocolType aPdpType,
 			const TDesC8& aPdpAddress,
@@ -192,15 +192,15 @@ public:
 
 
 
-class MLtsyDispatchPacketServicesInitialisePdpContext : public MLtsyDispatchInterface
+class MLtsyDispatchPacketServicesInitialisePrimaryPdpContext : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesInitialisePdpContextApiId = KDispatchPacketServicesFuncUnitId + 7;
+	static const TInt KLtsyDispatchPacketServicesInitialisePrimaryPdpContextApiId = KDispatchPacketServicesFuncUnitId + 7;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EPacketContextInitialiseContext
-	 * request from the CTSY.
+	 * request to initialize a primary context from the CTSY.
 	 *
 	 * It is a request call that is completed by invoking
 	 * CCtsyDispatcherCallback::CallbackPacketServicesInitialisePdpContextComp()
@@ -209,22 +209,44 @@ public:
 	 *
      * @param aPrimaryContextName Primary context name in the form of a character string, 
 	 * the maximum length of the descriptor should not exceed KMaxInfoName.
-     * @param aSecondaryContextName Optional secondary context name in the form of a character
-     * string, the maximum length of the descriptor should not exceed KMaxInfoName.
-	 *
+     *
 	 * @return KErrNone on success, otherwise another error code indicating the
 	 * failure.
 	 */
-	virtual TInt HandleInitialisePdpContextReqL(const TDesC& aPrimaryContextName, const TDesC& aSecondaryContextName) = 0;
-	}; // class MLtsyDispatchPacketServicesInitialisePdpContext
+	virtual TInt HandleInitialisePrimaryPdpContextReqL(const TDesC& aPrimaryContextName) = 0;
+	}; // class MLtsyDispatchPacketServicesInitialisePrimaryPdpContext
 
+class MLtsyDispatchPacketServicesInitialiseSecondaryPdpContext : public MLtsyDispatchInterface
+    {
+public:
 
+    static const TInt KLtsyDispatchPacketServicesInitialiseSecondaryPdpContextApiId = KDispatchPacketServicesFuncUnitId + 8;
+
+    /**
+     * The CTSY Dispatcher shall invoke this function on receiving the EPacketContextInitialiseContext
+     * request to initialize a secondary context from the CTSY.
+     *
+     * It is a request call that is completed by invoking
+     * CCtsyDispatcherCallback::CallbackPacketServicesInitialisePdpContextComp()
+     * Implementation of this interface should initialise either primary or secondary contexts
+     *
+     *
+     * @param aPrimaryContextName Primary context name in the form of a character string, 
+     * the maximum length of the descriptor should not exceed KMaxInfoName.
+     * @param aSecondaryContextName Secondary context name in the form of a character
+     * string, the maximum length of the descriptor should not exceed KMaxInfoName.
+     *
+     * @return KErrNone on success, otherwise another error code indicating the
+     * failure.
+     */
+    virtual TInt HandleInitialiseSecondaryPdpContextReqL(const TDesC& aPrimaryContextName, const TDesC& aSecondaryContextName) = 0;
+    }; // class MLtsyDispatchPacketServicesInitialiseSecondaryPdpContext
 
 class MLtsyDispatchPacketServicesDeletePdpContext : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesDeletePdpContextApiId = KDispatchPacketServicesFuncUnitId + 8;
+	static const TInt KLtsyDispatchPacketServicesDeletePdpContextApiId = KDispatchPacketServicesFuncUnitId + 9;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EPacketContextDelete
@@ -251,7 +273,7 @@ class MLtsyDispatchPacketServicesSetPacketAttachMode : public MLtsyDispatchInter
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesSetPacketAttachModeApiId = KDispatchPacketServicesFuncUnitId + 9;
+	static const TInt KLtsyDispatchPacketServicesSetPacketAttachModeApiId = KDispatchPacketServicesFuncUnitId + 10;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EPacketSetAttachMode
@@ -271,28 +293,6 @@ public:
 	}; // class MLtsyDispatchPacketServicesSetPacketAttachMode
 
 
-
-class MLtsyDispatchPacketServicesNotifyPacketStatusChange : public MLtsyDispatchInterface
-	{
-public:
-
-	static const TInt KLtsyDispatchPacketServicesNotifyPacketStatusChangeApiId = KDispatchPacketServicesFuncUnitId + 10;
-
-	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the EPacketNotifyStatusChange
-	 * request from the CTSY.
-	 *
-	 * It is a request call that is completed by invoking
-	 * CCtsyDispatcherCallback::CallbackPacketServicesNotifyPacketStatusChangeComp()
-	 *
-	 * Implementation of this interface should notify when the status of the packet service was changed.
-	 * 
-	 * @return KErrNone on success, otherwise another error code indicating the
-	 * failure.
-	 */
-	virtual TInt HandleNotifyPacketStatusChangeReqL() = 0;
-
-	}; // class MLtsyDispatchPacketServicesNotifyPacketStatusChange
 
 
 
@@ -531,33 +531,12 @@ public:
 
 	}; // class MLtsyDispatchPacketServicesAddPacketFilter
 
-class MLtsyDispatchPacketServicesGetStatus : public MLtsyDispatchInterface
-	{
-public:
-
-	static const TInt KLtsyDispatchPacketServicesGetStatusApiId = KDispatchPacketServicesFuncUnitId + 20;
-
-	/**
-	 * The CTSY Dispatcher shall invoke this function during the packet services bootup
-	 * as part of EPacketNotifyStatusChange call.
-	 * 
-	 * It is a request call that is completed by invoking
-	 * CCtsyDispatcherCallback::CallbackPacketServicesGetStatusComp()
-	 * 
-	 * Implemetation of this interface should retrieve the packet service status.
-	 * 
-	 * @return KErrNone on success, otherwise another error code indicating the
-	 * failure.
-	 */
-	virtual TInt HandleGetStatusReqL() = 0;
-
-	}; // class MLtsyDispatchPacketServicesGetStatus
 
 class MLtsyDispatchPacketServicesGetStaticCapabilities : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesGetStaticCapabilitiesApiId = KDispatchPacketServicesFuncUnitId + 21;
+	static const TInt KLtsyDispatchPacketServicesGetStaticCapabilitiesApiId = KDispatchPacketServicesFuncUnitId + 20;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function during the packet services bootup
@@ -584,7 +563,7 @@ class MLtsyDispatchPacketServicesGetMaxNoMonitoredServiceLists : public MLtsyDis
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesGetMaxNoMonitoredServiceListsApiId = KDispatchPacketServicesFuncUnitId + 22;
+	static const TInt KLtsyDispatchPacketServicesGetMaxNoMonitoredServiceListsApiId = KDispatchPacketServicesFuncUnitId + 21;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function during the packet services bootup
@@ -611,7 +590,7 @@ class MLtsyDispatchPacketServicesGetMaxNoActiveServices : public MLtsyDispatchIn
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesGetMaxNoActiveServicesApiId = KDispatchPacketServicesFuncUnitId + 23;
+	static const TInt KLtsyDispatchPacketServicesGetMaxNoActiveServicesApiId = KDispatchPacketServicesFuncUnitId + 22;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function during the packet services bootup
@@ -635,7 +614,7 @@ class MLtsyDispatchPacketServicesInitialiseMbmsContext : public MLtsyDispatchInt
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesInitialiseMbmsContextApiId = KDispatchPacketServicesFuncUnitId + 24;
+	static const TInt KLtsyDispatchPacketServicesInitialiseMbmsContextApiId = KDispatchPacketServicesFuncUnitId + 23;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the ECtsyPacketMbmsInitialiseContextReq
@@ -664,7 +643,7 @@ class MLtsyDispatchPacketServicesGetMbmsNetworkServiceStatus : public MLtsyDispa
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesGetMbmsNetworkServiceStatusApiId = KDispatchPacketServicesFuncUnitId + 25;
+	static const TInt KLtsyDispatchPacketServicesGetMbmsNetworkServiceStatusApiId = KDispatchPacketServicesFuncUnitId + 24;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EPacketGetMbmsNetworkServiceStatus
@@ -701,7 +680,7 @@ class MLtsyDispatchPacketServicesUpdateMbmsMonitorServiceList : public MLtsyDisp
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesUpdateMbmsMonitorServiceListApiId = KDispatchPacketServicesFuncUnitId + 26;
+	static const TInt KLtsyDispatchPacketServicesUpdateMbmsMonitorServiceListApiId = KDispatchPacketServicesFuncUnitId + 25;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EPacketUpdateMbmsMonitorServiceList
@@ -734,7 +713,7 @@ class MLtsyDispatchPacketServicesUpdateMbmsSessionList : public MLtsyDispatchInt
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesUpdateMbmsSessionListApiId = KDispatchPacketServicesFuncUnitId + 27;
+	static const TInt KLtsyDispatchPacketServicesUpdateMbmsSessionListApiId = KDispatchPacketServicesFuncUnitId + 26;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EPacketContextUpdateMbmsSessionList
@@ -766,7 +745,7 @@ class MLtsyDispatchPacketServicesRemovePacketFilter : public MLtsyDispatchInterf
 	{
 public:
 
-	static const TInt KLtsyDispatchPacketServicesRemovePacketFilterApiId = KDispatchPacketServicesFuncUnitId + 28;
+	static const TInt KLtsyDispatchPacketServicesRemovePacketFilterApiId = KDispatchPacketServicesFuncUnitId + 27;
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EPacketContextRemovePacketFilter
 	 * request from the CTSY.

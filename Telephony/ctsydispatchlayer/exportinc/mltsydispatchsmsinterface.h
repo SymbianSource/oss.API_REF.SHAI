@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -92,6 +92,7 @@ namespace DispatcherSim
 	    };	
 	}
 
+
 class MLtsyDispatchSmsSendSatSms : public MLtsyDispatchInterface
 	{
 public:
@@ -127,67 +128,11 @@ public:
 	}; // class MLtsyDispatchSmsSendSatSms
 
 
-
-class MLtsyDispatchSmsGetSmsStoreInfo : public MLtsyDispatchInterface
-	{
-public:
-
-	static const TInt KLtsyDispatchSmsGetSmsStoreInfoApiId = KDispatchSmsFuncUnitId + 2;
-
-	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the EMobileSmsMessagingGetMessageStoreInfo
-	 * request from the CTSY.
-	 *
-	 * It is a request call that is completed by invoking
-	 * CCtsyDispatcherCallback::CallbackSmsGetSmsStoreInfoComp()
-	 *
-	 * Implementation of this interface should retrieve the current Sms store information.
-	 *
-	 *
-	 * @return KErrNone on success, otherwise another error code indicating the
-	 * failure.
-	 * 
-	 * @see RMobileSmsMessaging::GetMessageStoreInfo
-	 */
-	virtual TInt HandleGetSmsStoreInfoReqL() = 0;
-
-	}; // class MLtsyDispatchSmsGetSmsStoreInfo
-
-
-
-class MLtsyDispatchSmsGetSmspList : public MLtsyDispatchInterface
-	{
-public:
-
-	static const TInt KLtsyDispatchSmsGetSmspListApiId = KDispatchSmsFuncUnitId + 3;
-
-	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the EMobileSmsMessagingGetSmspListPhase1
-	 * request from the CTSY.
-	 *
-	 * It is a request call that is completed by invoking
-	 * CCtsyDispatcherCallback::CallbackSmsGetSmspListComp()
-	 *
-	 * Implementation of this interface should request to read the SMS parameter list from the SIM's SMSP store.
-	 *
-	 *
-	 * @return KErrNone on success, otherwise another error code indicating the
-	 * failure.
-	 * 
-	 * @see CMobilePhoneSmspList()
-	 * @see CRetrieveMobilePhoneSmspList()
-	 */
-	virtual TInt HandleGetSmspListReqL() = 0;
-
-	}; // class MLtsyDispatchSmsGetSmspList
-
-
-
 class MLtsyDispatchSmsNackSmsStored : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchSmsNackSmsStoredApiId = KDispatchSmsFuncUnitId + 4;
+	static const TInt KLtsyDispatchSmsNackSmsStoredApiId = KDispatchSmsFuncUnitId + 2;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EMobileSmsMessagingNackSmsStored
@@ -239,7 +184,7 @@ class MLtsyDispatchSmsAckSmsStored : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchSmsAckSmsStoredApiId = KDispatchSmsFuncUnitId + 5;
+	static const TInt KLtsyDispatchSmsAckSmsStoredApiId = KDispatchSmsFuncUnitId + 3;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EMobileSmsMessagingAckSmsStored
@@ -289,7 +234,7 @@ class MLtsyDispatchSmsResumeSmsReception : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchSmsResumeSmsReceptionApiId = KDispatchSmsFuncUnitId + 6;
+	static const TInt KLtsyDispatchSmsResumeSmsReceptionApiId = KDispatchSmsFuncUnitId + 4;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EMobileSmsMessagingResumeSmsReception
@@ -312,7 +257,7 @@ class MLtsyDispatchSmsSendSmsMessage : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchSmsSendSmsMessageApiId = KDispatchSmsFuncUnitId + 7;
+	static const TInt KLtsyDispatchSmsSendSmsMessageApiId = KDispatchSmsFuncUnitId + 5;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EMobileSmsMessagingSendMessage
@@ -348,7 +293,7 @@ class MLtsyDispatchSmsSendSmsMessageNoFdnCheck : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchSmsSendSmsMessageNoFdnCheckApiId = KDispatchSmsFuncUnitId + 8;
+	static const TInt KLtsyDispatchSmsSendSmsMessageNoFdnCheckApiId = KDispatchSmsFuncUnitId + 6;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EMobileSmsMessagingSendMessageNoFdnCheck
@@ -384,7 +329,7 @@ class MLtsyDispatchSmsSetMoSmsBearer : public MLtsyDispatchInterface
 	{
 public:
 
-	static const TInt KLtsyDispatchSmsSetMoSmsBearerApiId = KDispatchSmsFuncUnitId + 9;
+	static const TInt KLtsyDispatchSmsSetMoSmsBearerApiId = KDispatchSmsFuncUnitId + 7;
 
 	/**
 	 * The CTSY Dispatcher shall invoke this function on receiving the EMobileSmsMessagingSetMoSmsBearer
@@ -406,31 +351,53 @@ public:
 	}; // class MLtsyDispatchSmsSetMoSmsBearer
 
 
-
-class MLtsyDispatchSmsStoreSmspListEntry : public MLtsyDispatchInterface
-	{
+class MLtsyDispatchSmsRoutingActivate : public MLtsyDispatchInterface
+    {
 public:
 
-	static const TInt KLtsyDispatchSmsStoreSmspListEntryApiId = KDispatchSmsFuncUnitId + 10;
+    static const TInt KLtsyDispatchSmsRoutingActivateApiId = KDispatchSmsFuncUnitId + 8;
 
-	/**
-	 * The CTSY Dispatcher shall invoke this function on receiving the EMobileSmsMessagingStoreSmspList
-	 * request from the CTSY.
-	 * 
-	 * It is a request call that is completed by invoking
-	 * CCtsyDispatcherCallback::CallbackSmsStoreSmspListComp()
-	 * 
-	 * Implementation of this interface should handle the request to store a SMSP entry 
-	 * in the SIM's SMSP file
-	 *
-	 * @param aSmspEntry Defines a set of SMS parameters
-	 *
-	 * @return KErrNone on success, otherwise another error code indicating the
-	 * failure.
-	 */
-	virtual TInt HandleStoreSmspListEntryReqL(const RMobileSmsMessaging::TMobileSmspEntryV1& aSmspEntry) = 0;
+    /**
+     * The CTSY Dispatcher shall invoke this function on receiving the EMmTsyActivateSmsRouting
+     * request from the CTSY.
+     *
+     * It is a request call that is completed by invoking
+     * CCtsyDispatcherCallback::CallbackSmsRoutingActivateComp()
+     *
+     * Implementation of this interface should allow client to set SMS bearer
+     * 
+     * 
+     *
+     * @return KErrNone on success, otherwise another error code indicating the
+     * failure.
+     */
+    virtual TInt HandleSmsRoutingActivateReqL() = 0;
 
-	}; // class MLtsyDispatchSmsStoreSmspList
+    }; // class MLtsyDispatchSmsRoutingActivate
 
+
+class MLtsyDispatchSmsRoutingDeactivate : public MLtsyDispatchInterface
+    {
+public:
+
+    static const TInt KLtsyDispatchSmsRoutingDeactivateApiId = KDispatchSmsFuncUnitId + 9;
+
+    /**
+     * The CTSY Dispatcher shall invoke this function on receiving the EMmTsyDeactivateSmsRouting?
+     * request from the CTSY.
+     *
+     * It is a request call that is completed by invoking
+     * CCtsyDispatcherCallback::CallbackSmsRoutingDeactivateComp()
+     *
+     * Implementation of this interface should allow client to set SMS bearer
+     * 
+     * 
+     *
+     * @return KErrNone on success, otherwise another error code indicating the
+     * failure.
+     */
+    virtual TInt HandleSmsRoutingDeactivateReqL() = 0;
+
+    }; // class MLtsyDispatchSmsRoutingDeactivate
 
 #endif /*MLTSYDISPATCHSMSINTERFACE_H_*/

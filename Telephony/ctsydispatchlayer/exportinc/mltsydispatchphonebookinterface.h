@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -73,6 +73,9 @@ namespace DispatcherPhonebook
 			iAdnTotalEntries(-1),
 			iAdnMaximumTextLength(-1),
 			iAdnMaximumNumberLength(-1),
+			iBdnTotalEntries(-1),
+			iBdnMaximumTextLength(-1),
+			iBdnMaximumNumberLength(-1),
 			iFdnTotalEntries(-1),
 			iFdnMaximumTextLength(-1),
 			iFdnMaximumNumberLength(-1),
@@ -101,6 +104,11 @@ namespace DispatcherPhonebook
 		TInt iAdnMaximumTextLength;
 		TInt iAdnMaximumNumberLength;
 
+		//Barred Dailling Numbers
+		TInt iBdnTotalEntries;
+		TInt iBdnMaximumTextLength;
+		TInt iBdnMaximumNumberLength;
+		
 		//Fixed Dialling numbers
 		TInt iFdnTotalEntries;
 		TInt iFdnMaximumTextLength;
@@ -384,8 +392,8 @@ public:
 	 *
 	 *
 	 * @param aPhonebook The phonebook to be written to.
-	 * @param aEntry The entry to be written, this is coded as a TLV, this can be decoded either
-	 * directly via a CPhoneBookBuffer() or via the CPhoneBookEntry::InternalizeFromTlvEntry() utility.
+	 * @param aEntry The entry to be written, this is coded as a TLV (Type-Length-Value tuplet used to create extensible protocols), 
+	 * this can be decoded either directly via a CPhoneBookBuffer() or via the CPhoneBookEntry::InternalizeFromTlvEntry() utility.
 	 *
 	 *
 	 * @return KErrNone on success, otherwise another error code indicating the
@@ -591,5 +599,29 @@ public:
 
 	}; // class MLtsyDispatchPhonebookSmsStoreWriteEntry
 
+
+class MLtsyDispatchPhonebookGetMailboxNumbers : public MLtsyDispatchInterface
+    {
+public:
+    
+    static const TInt KLtsyDispatchPhonebookGetMailboxNumbersApiId = KDispatchPhonebookFuncUnitId + 16;
+
+    /**
+     * The CTSY Dispatcher shall invoke this function on receiving the EMobilePhoneGetMailboxNumbers
+     * request from the CTSY.
+     * 
+     * Callback is CCtsyDispatcherCallback::CallbackPhonebookGetMailboxNumbersComp()
+     *
+     * Implementation of this interface should request to get the Mailbox numbers identifier information 
+     * from the EF_MBI file in the USIM.
+     *
+     *
+     * @return KErrNone on success, otherwise another error code indicating the
+     * failure.
+     */
+     
+    virtual TInt HandleGetMailboxNumbersReqL() = 0;
+
+    }; // class MLtsyDispatchPhonebookGetMailboxNumbers
 
 #endif /*MLTSYDISPATCHPHONEBOOKINTERFACE_H_*/

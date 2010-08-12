@@ -1,6 +1,6 @@
 
 /**
-* Copyright (c) 2005-2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2005-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -33,6 +33,21 @@
 /** This namespace includes the BCA component names.*/
 namespace BasebandChannelAdaptation2
 {
+	
+/** Flow control
+ * 
+ 
+ * @publishedPartner
+ * @prototype
+ */
+ 	enum TBcaFlowControlIndication 
+		{
+			// Flow Control is off
+			EBcaFlowCtlOff,
+			// Flow Control is on
+			EBcaFlowCtlOn
+		};
+	
 /**
  * The class implemented by an upper component to accept control signals from the lower component
 
@@ -81,13 +96,19 @@ public:
 	/**
 	* This function is called whenever data has been received by MBca which 
 	* should be processed by its client. The implementer takes ownership of the 
-	* buffer and is responsible for its deletion.
+	* buffer and is responsible for its deletion.  Note: if there is a flow control
+	* situation (i.e. the upper data receiver cannot handle more data) it will accept
+	* the current packet and inform the lower component through the return code that
+	* flow control is on.  The upper data receiver accepts this packet, i.e. the lower
+	* data sender must not send a copy of this data. When flow control is off, the
+	* upper data receiver will call StartReceiving() to signal the lower component to
+	* start processing new packets.
 	
 	* @param aCommsBufChain - The list of comms buffers containing data to be processed. 
          * Destination keeps the custody of the buffer.
-	* @return none.
+	* @return TBcaFlowControlIndication.
 	*/
-	virtual void Process(RCommsBufChain& aCommsBufChain)=0;
+	virtual TBcaFlowControlIndication Process(RCommsBufChain& aCommsBufChain)=0;
 	};
 
 /**
@@ -100,27 +121,42 @@ public:
 class MLowerDataSender
 	{
 	public:
-	enum TSendResult
-		{
-			// data accepted, send no more until MUpperControl::StartSending() is called
-			ESendBlocked,
-			// data accepted, can send more.
-			ESendAccepted
-		};
+		
 	/**
 	* Sends the specified buffer data down to the base-band. The implementer takes 
 	* ownership of the buffer and is responsible for its deletion.
 	
 	* @param aCommsBufChain the comms buffer list to be sent.The buffer ownership is passed 
 	* to the BCA
-	* @return TTSendResult either ESendBlocked or SendAccepted. When the Bca 
+	* @return TTSendResult either EBcaFlowCtlOn or EBcaFlowCtlOff. When the Bca 
 	* is congested and cannot send any data beyond the current packet (which is 
-	* always accepted), the implementation returns ESendBlocked. If BCA is not
-	* congested then ESendAccepted is returned to continue sending. When congestion 
+	* always accepted), the implementation returns EBcaFlowCtlOn. If BCA is not
+	* congested then EBcaFlowCtlOff is returned to continue sending. When congestion 
 	* passes, the Bca calls StartSending on the upper layer to resume sending. The
 	* implementation is recommended to panic any attempts to call Send during congestion 
 	*/
-	virtual	TSendResult Send(RCommsBufChain& aCommsBufChain)=0;
+	virtual	TBcaFlowControlIndication Send(RCommsBufChain& aCommsBufChain)=0;
+	};
+
+/**
+ * The interface implemented by the lower component to allow the upper component to inform
+ * Bca that it can now handle packets.
+
+ * @publishedPartner
+ * @prototype
+ */
+class MLowerControl
+	{
+public:
+/**
+	* Indicates to the layer below that Bca the link layer is ready to 
+	* receive packets from Bca, either after Start() completes or following
+	* flow control. 
+	
+	* @param none
+	* @return none.
+	*/
+	virtual void StartReceiving()=0;
 	};
 
 /**
@@ -178,7 +214,19 @@ public:
 	* @param none
 	* @return reference to the MLowerDataSender. 
 	*/
-	virtual MLowerDataSender& GetSender()=0;
+	virtual MLowerDataSender& GetLowerDataSender()=0;
+	
+	
+	/**
+	 * Returns a reference to the MLowerControl, This reference is used by 
+	 * upper components to inform lower Bca that it can resume sending. This API must be 
+	 * called only after Start() completes, otherwise the implementation should panic.
+ 	
+	* @param none
+	* @return reference to the MLowerControl. 
+	*/
+	virtual MLowerControl& GetLowerControl()=0;
+	
 	
 	/**
 	* Synchronously closes the BCA immediately. Informs the BCA is no longer 
@@ -200,25 +248,6 @@ public:
 	*/
 	virtual void Release()=0;
 	
-	enum TBlockOption
-		{
-			//stop sending [block] data on interface
-			EBlockFlow, 
-			// start sending [unblock] data on interface
-			EUnblockFlow
-		};
-	/**
-	* Either blocks or unblocks the pushing of received data to the upper layers, 
-	* depending on TBlockOption. If the upper layers can’t process any more
-	* data to stop receiving packets this API is called with EBlockFlow. 
-	* Later after the congestion eases, to start receiving packets again call 
-	* this API with EUnblockFlow
-	
-	* @param aOption either block or unblock receive flow
-	* @return none.
-	*/
-	virtual void SetFlowControl(TBlockOption aOption)=0;
-
 	/**
 	* The BCA control function to get or set the options of the BCA in an 
 	* asynchronous manner.
@@ -263,8 +292,8 @@ const TUint KBcaCapSerial			= 0x01; //Serial port capability supported
 const TUint KBCAMru	                = 0x12;
 const TUint KBCAMtu	                = 0x13;
 const TUint KBCASpeedMetric	        = 0x14;
-const TUint KBCACaps	            = 0x15;
-const TUint KBCASetIapId	        = 0x16;
+const TUint KBCACaps	              = 0x15;
+const TUint KBCASetIapId	          = 0x16;
 const TUint KBCASetBcaStack	        = 0x1e;
 const TUint KVersionNumber	        = 0x1c;
 /** 

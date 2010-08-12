@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -111,7 +111,8 @@ enum TLtsyDispatchPacketServicesCallbackIndicatorIds_Group1
   KLtsyDispatchPacketServicesNotifyPacketNetworkRegistrationStatusIndId = 512,
   KLtsyDispatchPacketServicesNotifyMbmsContextConfigChangedIndId = 1024,
   KLtsyDispatchPacketServicesNotifyMbmsNetworkServiceStatusChangeIndId = 2048,
-  KLtsyDispatchPacketServicesNotifyMbmsServiceAvailabilityChangeIndId = 4096
+  KLtsyDispatchPacketServicesNotifyMbmsServiceAvailabilityChangeIndId = 4096,
+  KLtsyDispatchPacketServicesNotifyPacketServicesStatusIndId = 8192
   };
 
 
@@ -265,24 +266,16 @@ public:
 	IMPORT_C void CallbackCallControlStartDtmfToneComp(TInt aError);
 	IMPORT_C void CallbackCallControlGetActiveAlsLineComp(TInt aError, RMobilePhone::TMobilePhoneALSLine aAlsLine);
 	IMPORT_C void CallbackCallControlDialDataComp(TInt aError, TInt aCallId);
-	IMPORT_C void CallbackCallControlUpdateLifeTimerComp(TInt aError);
+
 	IMPORT_C void CallbackCallControlNotifyIccCallForwardingStatusChangeInd(TInt aError, const RMobilePhone::TMobileAddress& aCallForwardingNo,
 				 		RMobilePhone::TCFUIndicatorStatusFlags aCallForwardingStatusFlags,
 				 		RMmCustomAPI::TMultipleSubscriberProfileID aMultipleSubscriberProfileId);
     IMPORT_C void CallbackCallControlGetAlsPpSupportComp(TInt aError, RMmCustomAPI::TAlsSupport aAlsSupport);
     IMPORT_C void CallbackCallControlGetAlsBlockedStatusComp(TInt aError, RMmCustomAPI::TGetAlsBlockStatus aAlsStatus);
     IMPORT_C void CallbackCallControlSetAlsBlockedComp(TInt aError);
-    IMPORT_C void CallbackCallControlGetLifeTimeComp(TInt aError);
-    IMPORT_C void CallbackCallControlGetLifeTimeComp(TInt aError, TUint32 aHours, TUint8 aMinutes);
-    IMPORT_C void CallbackCallControlGetLifeTimeComp(TInt aError, const TDateTime &aManufacturingDate);
-    IMPORT_C void CallbackCallControlGetLifeTimeComp(TInt aError, const TDateTime &aManufacturingDate, TUint32 aHours, TUint8 aMinutes);
+
     IMPORT_C void CallbackCallControlTerminateErrorCallComp(TInt aError);
     IMPORT_C void CallbackCallControlTerminateAllCallsComp(TInt aError);
-    IMPORT_C void CallbackCallControlGetCallForwardingIndicatorComp(TInt aError, RMobilePhone::TMobileTON aTypeOfNumber,
-                                                                    RMobilePhone::TMobileNPI aMobilePlan,
-                                                                    const TDesC &aNumber,
-                                                                    RMobilePhone::TCFUIndicatorStatusFlags aCFUIndicatorStatusFlags,
-                                                                    RMobilePhone::TMultipleSubscriberProfileID aMultipleSubscriberProfileId);
 
 	// Phone related callbacks
 	IMPORT_C void CallbackPhoneGetFdnStatusComp(TInt aError, RMobilePhone::TMobilePhoneFdnStatus aFdnStatus);
@@ -370,13 +363,12 @@ public:
 	IMPORT_C void CallbackPhonebookEnStoreReadEntryComp(TInt aError, TInt aIndex, const TDesC& aNumber);
 
 	// CellBroadcast related callbacks
+	IMPORT_C void CallbackCellBroadcastSetBroadcastFilterSettingComp(TInt aError);
 	IMPORT_C void CallbackCellBroadcastGsmBroadcastNotifyMessageReceivedInd(TInt aError, const TDesC8& aCbsMsg);
 	IMPORT_C void CallbackCellBroadcastWcdmaBroadcastMessageReceivedInd(TInt aError, const TDesC8& aWcdmaCbsData, const DispatcherCellBroadcast::TWcdmaCbsMsgBase& aWcdmaCbsMsgBase, TBool aMoreToCome);
-	IMPORT_C void CallbackCellBroadcastSetBroadcastFilterSettingComp(TInt aError);
 	IMPORT_C void CallbackCellBroadcastActivateBroadcastReceiveMessageComp(TInt aError);
 	IMPORT_C void CallbackCellBroadcastReceiveMessageCancelComp(TInt aError);
-	IMPORT_C void CallbackCellBroadcastStartSimCbTopicBrowsingComp(TInt aError, const CArrayFixFlat< RMmCustomAPI::TSimCbTopic >& aSimTopicArray );
-	IMPORT_C void CallbackCellBroadcastDeleteSimCbTopicComp(TInt aError);
+
 
 	// PhonebookOn related callbacks
 	IMPORT_C void CallbackPhonebookOnStoreReadAllInd(TInt aError);
@@ -407,7 +399,8 @@ public:
 	IMPORT_C void CallbackPhonebookSmsStoreGetInfoComp(TInt aError, TInt aTotalEntries, TInt aUsedEntries);
 	IMPORT_C void CallbackPhonebookSmsStoreReadEntryComp(TInt aError, const DispatcherPhonebook::TSmsData& aSmsData);
 	IMPORT_C void CallbackPhonebookSmsStoreWriteEntryComp(TInt aError, TInt aLocation, TBool aReceivedClass2ToBeResent);
-
+	IMPORT_C void CallbackPhonebookGetMailboxNumbersComp(const RMobilePhone::TMobilePhoneVoicemailIdsV3& aMailboxNumbers);
+	
 	// Sim related callbacks
 	IMPORT_C void CallbackSimRefreshSimFilesInd(TInt aError, TUint16 aRefreshFileList);
 	IMPORT_C void CallbackSimNotifyIccMessageWaitingIndicatorsChangeInd(TInt aError, const RMobilePhone::TMobilePhoneMessageWaitingV1& aIndicators);
@@ -441,20 +434,30 @@ public:
 	IMPORT_C void CallbackSimSendApduRequestV2Comp(TInt aError, const TDesC8& aResponseData);
 	IMPORT_C void CallbackSimSimWarmResetComp(TInt aError);
 	IMPORT_C void CallbackSimSetSimMessageStatusReadComp(TInt aError);
-
+	IMPORT_C void CallbackCellBroadcastStartSimCbTopicBrowsingComp(TInt aError, const CArrayFixFlat< RMmCustomAPI::TSimCbTopic >& aSimTopicArray );
+	IMPORT_C void CallbackCellBroadcastDeleteSimCbTopicComp(TInt aError);
+	IMPORT_C void CallbackSmsGetSmspListComp(TInt aError, const TDesC& aServiceCenterAddress, const TDesC& aDestinationAddress,
+				  const TDesC& aAlphaTagData, const DispatcherSim::TSmsParameters& aSmsParameters, TBool aMoreToCome);
+	IMPORT_C void CallbackSmsStoreSmspListEntryComp(TInt aError);	
+	IMPORT_C void CallbackSmsGetSmsStoreInfoComp(TInt aError, TInt aTotalEntries, TInt aUsedEntries);
+    IMPORT_C void CallbackCallControlGetCallForwardingIndicatorComp(TInt aError, RMobilePhone::TMobileTON aTypeOfNumber,
+                                                                    RMobilePhone::TMobileNPI aMobilePlan,
+                                                                    const TDesC &aNumber,
+                                                                    RMobilePhone::TCFUIndicatorStatusFlags aCFUIndicatorStatusFlags,
+                                                                    RMobilePhone::TMultipleSubscriberProfileID aMultipleSubscriberProfileId);
+    IMPORT_C void CallbackSimGetImsAuthorizationInfoComp(TInt aError, const TDesC8& aImpi, const RArray<RMobilePhone::TIMPU>& aImpu, const TDesC8& aHndn);
+    
 	// Sms related callbacks
 	IMPORT_C void CallbackSmsNotifyReceiveSmsMessageInd(TInt aError, TBool aInd, const TSmsMsg& aSmsMessage);
 	IMPORT_C void CallbackSmsSendSatSmsComp(TInt aError);
-	IMPORT_C void CallbackSmsGetSmsStoreInfoComp(TInt aError, TInt aTotalEntries, TInt aUsedEntries);
-	IMPORT_C void CallbackSmsGetSmspListComp(TInt aError, const TDesC& aServiceCenterAddress, const TDesC& aDestinationAddress,
-				  const TDesC& aAlphaTagData, const DispatcherSim::TSmsParameters& aSmsParameters, TBool aMoreToCome);
 	IMPORT_C void CallbackSmsNackSmsStoredComp(TInt aError);
 	IMPORT_C void CallbackSmsAckSmsStoredComp(TInt aError);
 	IMPORT_C void CallbackSmsResumeSmsReceptionComp(TInt aError);
 	IMPORT_C void CallbackSmsSendSmsMessageComp(TInt aError, TInt aMsgRef, const TDesC8& aSmsSubmitReport);
 	IMPORT_C void CallbackSmsSendSmsMessageNoFdnCheckComp(TInt aError, TInt aMsgRef, const TDesC8& aSmsSubmitReport);
 	IMPORT_C void CallbackSmsSetMoSmsBearerComp(TInt aError);
-	IMPORT_C void CallbackSmsStoreSmspListEntryComp(TInt aError);
+	IMPORT_C void CallbackSmsRoutingActivateComp(TInt aError, TUint8 aSmsRoutingStatus);
+	IMPORT_C void CallbackSmsRoutingDeactivateComp(TInt aError, TUint8 aSmsRoutingStatus);
 
 	// CallControlMultiparty related callbacks
 	IMPORT_C void CallbackCallControlMultipartyConferenceHangUpComp(TInt aError);
@@ -474,13 +477,13 @@ public:
 	IMPORT_C void CallbackSupplementaryServicesNotifyRequestCompleteInd(TInt aError, TInt aStatus);
 	IMPORT_C void CallbackSupplementaryServicesNotifySendNetworkServiceRequestInd(TInt aError, RMobilePhone::TMobilePhoneNotifySendSSOperation aOperationCode, const TDesC& aAdditionalInfo);
 	// NotifySS options
-	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventForwardModeInd(TInt aError, RMmCustomAPI::TSsType aType, RMmCustomAPI::TSsMode aMode, RMmCustomAPI::TSsForwMode aForwardMode);
-	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventCallWaitingInd(TInt aError, RMmCustomAPI::TSsMode aMode, TBool aCallIsWaiting);
-	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventHoldModeInd(TInt aError, RMmCustomAPI::TSsType aType, RMmCustomAPI::TSsMode aMode, RMmCustomAPI::TSsHoldMode aHoldMode);
-	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventConfrenceInd(TInt aError, RMmCustomAPI::TSsType aType, RMmCustomAPI::TSsMode aMode, TBool aConferenceIndicator);
-	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventCugInd(TInt aError, RMmCustomAPI::TSsType aType, RMmCustomAPI::TSsMode aMode, TUint16 aCugIndex);
-	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventClirSuppressionInd(TInt aError, RMmCustomAPI::TSsMode aMode, TBool aClirSuppressionRejected);
-	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventEctCallStateInd(TInt aError, RMmCustomAPI::TSsType aType, RMmCustomAPI::TSsMode aMode, RMmCustomAPI::TSsEctState aEctCallState, RMmCustomAPI::TSsChoice aEctChoice, const TDesC& aRemotePartyNumber);
+	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventForwardModeInd(TInt aError, RMmCustomAPI::TSsForwMode aForwardMode);
+	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventCallWaitingInd(TInt aError, TBool aCallIsWaiting);
+	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventHoldModeInd(TInt aError, RMmCustomAPI::TSsHoldMode aHoldMode);
+	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventConfrenceInd(TInt aError, TBool aConferenceIndicator);
+	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventCugInd(TInt aError, TUint16 aCugIndex);
+	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventClirSuppressionInd(TInt aError, TBool aClirSuppressionRejected);
+	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventEctCallStateInd(TInt aError, RMmCustomAPI::TSsEctState aEctCallState, RMmCustomAPI::TSsChoice aEctChoice, const TDesC& aRemotePartyNumber);
 	IMPORT_C void CallbackSupplementaryServicesNotifyNetworkEventInd(TInt aError, RMmCustomAPI::TSsType aType, RMmCustomAPI::TSsMode aMode);
 	
 	IMPORT_C void CallbackSupplementaryServicesSendNetworkServiceRequestNoFdnCheckComp(TInt aError);
@@ -517,6 +520,7 @@ public:
 	IMPORT_C void CallbackPacketServicesNotifyMbmsNetworkServiceStatusChangeInd(TInt aError, TMbmsNetworkServiceStatus aMbmsNetworkServiceStatus);
 	IMPORT_C void CallbackPacketServicesNotifyMbmsServiceAvailabilityChangeInd(TInt aError, const RArray<TUint>& aAvailableServiceIds);
 	IMPORT_C void CallbackPacketServicesNotifyConnectionInfoChangeInd(TInt aError, const TDesC& aContextName, const RPacketContext::TConnectionInfoV1& aConnectionInfo);
+    IMPORT_C void CallbackPacketServicesNotifyStatusInd(TInt aError, RPacketService::TStatus aPacketStatus, TBool aIsResumed);
 	IMPORT_C void CallbackPacketServicesPacketAttachComp(TInt aError);
 	IMPORT_C void CallbackPacketServicesGetPacketAttachModeComp(TInt aError, RPacketService::TAttachMode aAttachMode);
 	IMPORT_C void CallbackPacketServicesGetPacketNetworkRegistrationStatusComp(TInt aError, RPacketService::TRegistrationStatus aRegistrationStatus);
@@ -531,7 +535,6 @@ public:
 	IMPORT_C void CallbackPacketServicesSetPdpContextQosComp(TInt aError, const TDesC& aContextName);
 	IMPORT_C void CallbackPacketServicesRejectNetworkInitiatedContextActivationRequestComp(TInt aError);
 	IMPORT_C void CallbackPacketServicesDeactivatePdpContextComp(TInt aError, const TDesC& aContextName);
-	IMPORT_C void CallbackPacketServicesGetStatusComp(TInt aError, RPacketService::TStatus aPacketStatus, TBool aIsResumed);
 	IMPORT_C void CallbackPacketServicesGetStaticCapabilitiesComp(TInt aError, TUint aStaticCapabilities);
 	IMPORT_C void CallbackPacketServicesGetMaxNoMonitoredServiceListsComp(TInt aError, TInt aMaxNoMonitoredServiceLists);
 	IMPORT_C void CallbackPacketServicesGetMaxNoActiveServicesComp(TInt aError, TInt aMaxNoActiveServices);
@@ -581,6 +584,9 @@ public:
 	IMPORT_C void CallbackSatReadyComp(TInt aError);
 	IMPORT_C void CallbackSatUssdControlEnvelopeErrorComp(TInt aError);
 	
+	// Other SHAI domain related callbacks
+    IMPORT_C void CallbackCallControlGetLifeTimeComp(TInt aError);
+    IMPORT_C void CallbackCallControlUpdateLifeTimerComp(TInt aError);
 protected:
 
 
